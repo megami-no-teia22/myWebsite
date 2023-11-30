@@ -1,145 +1,301 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title>Данные об играх</title>
-</head>
-<body>
-    <p>
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Данные об играх</title>
+
+        <script>
+function setSortTable(idTable, idSelect) {
+    // находим нужную таблицу
+    let table = document.getElementById(idTable);
+
+    //перебираем все строки таблицы
+    for (let i = 0; i < table.rows.length; i++) {
+        // создаем новую ячейку таблицы
+        let cell = document.createElement('td');
+        cell.innerHTML = i;
+
+        cell.hidden = true; //пронумерованный столбик
+
+        // вставляем ее в таблицу перед всеми остальными ячейками
+        table.rows[i].insertBefore(cell, table.rows[i].firstElementChild);
+    }
+
+    // находим поле со списком
+    let selectField = document.getElementById(idSelect);
+
+    // выделяем заголовочные ячейки таблицы
+    let rowTh = table.rows[0].cells;
+
+    // перебираем все ячейки таблицы, кроме 0
+    for (let i = 1; i < rowTh.length; i++) {
+        // создаем элемент списка
+        let item = document.createElement('option');
+        item.innerHTML = rowTh[i].innerHTML;
+        item.setAttribute("value", i);
+        // добавляем очередной элемент к списку
+        selectField.appendChild(item);
+
+    }
+}
+
+// вызываем функцию настройки сортировки при загрузке страницы
+document.addEventListener("DOMContentLoaded", function () {
+    setSortTable('list', 'fields');
+})
+
+
+//реализовать функцию filterTable() для фильтрации строк таблицы (функция в качестве параметра будет получать id таблицы и данные из формы):
+function filterTable(idTable, data) {
+	// находим нужную таблицу
+	let table = document.getElementById(idTable);
+	
+	let gamename = data.gamename.value.toLowerCase();
+	let platform = data.platform.value.toLowerCase();
+	let genre = data.genre.value.toLowerCase();
+	let protagonist = data.protagonist.value.toLowerCase();
+	let yearFrom = data.yearFrom.value;
+	if (yearFrom === '') {
+		yearFrom = -Infinity;
+	}
+	
+// текст фильтра из поля Год до
+	let yearTo = data.yearTo.value;
+	if (yearTo === '') {
+		yearTo = Infinity;
+	}
+
+	//перебираем все строки таблицы без заголовка
+	for (let i = 1; i < table.rows.length; i++) {
+		// скрываем все строки таблицы
+		table.rows[i].hidden = true;
+		
+		// выбираем значение из очередной строки столбца Название
+		let cellName = table.rows[i].cells[1].innerHTML.toLowerCase();
+
+
+		// выбираем значение из очередной строки столбца Тип
+		let cellPlatform = table.rows[i].cells[3].innerHTML.toLowerCase();
+
+		let cellGenre = table.rows[i].cells[3].innerHTML.toLowerCase();
+
+		let cellProtagonist = table.rows[i].cells[4].innerHTML.toLowerCase();
+
+		let cellYear = Number(table.rows[i].cells[2].innerHTML)
+		
+		
+		// если значения из каждого поля встречается в соответствующей ячейке -
+		// делаем строку видимой
+		if (cellName.indexOf(gamename) !== -1 &&
+			cellPlatform.indexOf(platform) !== -1 &&
+			cellGenre.indexOf(genre) !== -1 &&
+			cellProtagonist.indexOf(protagonist) !== -1 &&
+			(cellYear >= yearFrom && cellYear <= yearTo)) {
+			table.rows[i].hidden = false;
+		}
+	}
+}
+
+
+function sortTable(idTable, sortColumn, desc) {
+	//находим нужную таблицу и ее раздел tbody
+	let table = document.getElementById(idTable).tBodies[0];
+	
+	// получаем коллекцию строк
+	let rowData = table.rows;
+	
+	// сортируем строки таблицы без заголовков методом "пузырька"
+	for(var i = 1; i < rowData.length - 1; i++){
+		for(let j = 1; j < rowData.length - i; j++){
+			
+			// выделяем ячейки из столбца, по которому сортируем
+			let cellA = rowData[j].cells[sortColumn].innerHTML;
+			let cellB = rowData[j + 1].cells[sortColumn].innerHTML;
+
+			if(sortColumn==5 || sortColumn==6){
+				cellA=Number(cellA)
+  				cellB=Number(cellB)
+			}
+			
+			// сравниваем ячейки соседних строк и меняем их местами при необходимости
+			if ((desc && cellA < cellB) || (!desc && cellA > cellB)){
+				table.insertBefore(rowData[j+1],rowData[j]);
+			}
+		}
+	}
+}
+
+
+
+
+function clearFilter(idTable, data){
+  data.gamename.value="";
+  data.platform.value="";
+  data.genre.value="";
+  data.protagonist.value="";
+  data.yearTo.value="";
+  data.yearFrom.value="";
+}
+        </script>
+    </head>
+
+    <body>
+        <p>
         <ul>
             <li><a href="tables.html">Таблица данных</a></li>
             <li><a href="index.html">Главная страница</a></li>
         </ul>
-    </p>
-    <hr />
-    <p><details><summary>Сортировка</summary>
-        <form><h4>Уровень 1:</h4>
-            <select name="sortFirst">
-                <option value="0">Нет</option>
-                <option value="1">Название игры</option>
-                <option value="2">Год выпуска</option>
-                <option value="3">Платформа</option>
-                <option value="4">Жанр</option>
-                <option value="5">Протагонист/ы</option></select>
-            <h4>Уровень 2:</h4>
-            <select name="sortSecond">
-                <option value="0">Нет</option>
-                <option value="1">Название игры</option>
-                <option value="2">Год выпуска</option>
-                <option value="3">Платформа</option>
-                <option value="4">Жанр</option>
-                <option value="5">Протагонист/ы</option>
-            </select>
-            <h4>Уровень 3:</h4>
-            <select name="sortThird">
-                <option value="0">Нет</option>
-                <option value="1">Название игры</option>
-                <option value="2">Год выпуска</option>
-                <option value="3">Платформа</option>
-                <option value="4">Жанр</option>
-                <option value="5">Протагонист/ы</option>
-            </select>
-        </form></details></p>
-    <input type="button" value="Применить"/>
-    <hr />
-    <table border="1" cellpadding="5" cellspacing="0">
-        <tbody>
-            <tr>
-                <th>Название игры</th>
-                <th>Год выпуска</th>
-                <th>Платформа</th>
-                <th>Жанр</th>
-                <th>Протагонист/ы</th>
-            </tr>
-            <tr>
-                <td>Восточное сверхъестественное сказание</td>
-                <td>1997</td>
-                <td>PC-98</td>
-                <td>Арканоид</td>
-                <td>Рейму Хакурей</td>
-            </tr>
-            <tr>
-                <td>Восточные записки о запечатывании демона</td>
-                <td>1997</td>
-                <td>PC-98</td>
-                <td>Даммаку-шутер</td>
-                <td>Рейму Хакурей</td>
-            </tr>
-            <tr>
-                <td>Измерение сна</td>
-                <td>1997</td>
-                <td>PC-98</td>
-                <td>Даммаку-шутер (дуэльный)</td>
-                <td>Рейму Хакурей, Мариса Кирисаме, второстепенные персонажи</td>
-            </tr>
-            <tr>
-                <td>Восточная страна иллюзий</td>
-                <td>1998</td>
-                <td>PC-98</td>
-                <td>Даммаку-шутер</td>
-                <td>Рейму Хакурей, Мариса Кирисаме</td>
-            </tr>
-            <tr>
-                <td>Дивный восточный рассказ</td>
-                <td>1998</td>
-                <td>PC-98</td>
-                <td>Даммаку-шутер</td>
-                <td>Рейму Хакурей, Мариса Кирисаме, Мима, Ююка Кадзами</td>
-            </tr>
-            <tr>
-                <td>Восточные земли Алой дьяволицы</td>
-                <td>2002</td>
-                <td>Windows</td>
-                <td>Даммаку-шутер</td>
-                <td>Рейму Хакурей, Мариса Кирисаме</td>
-            </tr>
-            <tr>
-                <td>Восточная чарующая мечта</td>
-                <td>2003</td>
-                <td>Windows</td>
-                <td>Даммаку-шутер</td>
-                <td>Рейму Хакурей, Мариса Кирисаме, Сакуя Идзаёй</td>
-            </tr>
-            <tr>
-                <td>Восточный узор бесконечной ночи</td>
-                <td>2004</td>
-                <td>Windows</td>
-                <td>Даммаку-шутер</td>
-                <td>
-                    Рейму Хакурей, Мариса Кирисаме, Юкари Якумо,<br />
-                    Алиса Маргатройд, Сакуя Идзаёй, Ремилия Скарлет,<br />
-                    Ёму Конпаку, Ююко Сайгёдзи
-                </td>
-            </tr>
-            <tr>
-                <td>Курган цветочных отражений</td>
-                <td>2005</td>
-                <td>Windows</td>
-                <td>Даммаку-шутер (дуэльный)</td>
-                <td>
-                    Рейму Хакурей, Мариса Кирисаме, Сакуя Идзаёй,<br />
-                    Ёму Конпаку, Рейсен Инаба, Чирно,<br />
-                    сёстры Призмривер, Мистия Лорелей, Теви Инаба,<br />
-                    Ая Шамеймару, Медисин Меланхоли, Ююка Кадзами,<br />
-                    Комачи Онодзука, Эики Шики
-                </td>
-            </tr>
-            <tr>
-                <td>Восточный корабль звезды-лотоса</td>
-                <td>2009</td>
-                <td>Windows</td>
-                <td>Даммаку-шутер</td>
-                <td>Рейму Хакурей, Мариса Кирисаме, Санаэ Кочия</td>
-            </tr>
-            <tr>
-                <td>Восточный замок сверкающих игл</td>
-                <td>2013</td>
-                <td>Windows</td>
-                <td>Даммаку-шутер</td>
-                <td>Рейму Хакурей, Мариса Кирисаме, Сакуя Идзаёй</td>
-            </tr>
-        </tbody>
-    </table>
-</body>
+        </p>
+        <hr />
+        <p>
+        <div id="forms">
+            <details>
+                <summary>Фильтр</summary>
+                <form>
+                    <p>
+                        <label for="gamename">Название игры:</label>
+                        <input type="text" name="gamename">
+                    </p>
+                    <p>
+                        <label for="platform">Платформа:</label>
+                        <input type="text" name="platform">
+                    </p>
+                    <p>
+                        <label for="genre">Жанр:</label>
+                        <input type="text" name="genre">
+                    </p>
+                    <p>
+                        <label for="protagonist">Протагонист/ы:</label>
+                        <input type="text" name="protagonist">
+                    </p>
+                    <p>
+                        <label for="yearFrom">Год: </label>
+    
+                                    от 
+                        <input type="number" name="yearFrom">
+                            до 
+                        <input type="number" name="yearTo">
+                    </p>
+                    <input type="button" value="Найти" onclick="filterTable('list', this.form)">
+                    <input type="button" value="Очистить фильтры" onclick="clearFilter('list', this.form)">
+                </form>
+            </details>
+            <details>
+                <summary>Сортировка</summary>
+                <form>
+                    <p>
+                        Сортировать по <select id="fields"></select>
+                    </p>
+                    <p>
+                        По убыванию? <input type="checkbox" id="desc">
+                    </p>
+                    <input type="button" value="Сортировать" onclick="sortTable('list', this.form.fields.value, this.form.desc.checked)">
+                    <input type="button" value="Сбросить сортировку" onclick="sortTable('list', 0, false)">
+            </details>
+        </div>
+        </p>
+        <input type="button" value="Применить" />
+        <hr />
+        <table id="list" border="1" cellpadding="5" cellspacing="0">
+            <tbody>
+                <tr>
+                    <th>Название игры</th>
+                    <th>Год выпуска</th>
+                    <th>Платформа</th>
+                    <th>Жанр</th>
+                    <th>Протагонист/ы</th>
+                </tr>
+                <tr>
+                    <td>Восточное сверхъестественное сказание</td>
+                    <td>1997</td>
+                    <td>PC-98</td>
+                    <td>Арканоид</td>
+                    <td>Рейму Хакурей</td>
+                </tr>
+                <tr>
+                    <td>Восточные записки о запечатывании демона</td>
+                    <td>1997</td>
+                    <td>PC-98</td>
+                    <td>Даммаку-шутер</td>
+                    <td>Рейму Хакурей</td>
+                </tr>
+                <tr>
+                    <td>Измерение сна</td>
+                    <td>1997</td>
+                    <td>PC-98</td>
+                    <td>Даммаку-шутер (дуэльный)</td>
+                    <td>Рейму Хакурей, Мариса Кирисаме, второстепенные персонажи</td>
+                </tr>
+                <tr>
+                    <td>Восточная страна иллюзий</td>
+                    <td>1998</td>
+                    <td>PC-98</td>
+                    <td>Даммаку-шутер</td>
+                    <td>Рейму Хакурей, Мариса Кирисаме</td>
+                </tr>
+                <tr>
+                    <td>Дивный восточный рассказ</td>
+                    <td>1998</td>
+                    <td>PC-98</td>
+                    <td>Даммаку-шутер</td>
+                    <td>Рейму Хакурей, Мариса Кирисаме, Мима, Ююка Кадзами</td>
+                </tr>
+                <tr>
+                    <td>Восточные земли Алой дьяволицы</td>
+                    <td>2002</td>
+                    <td>Windows</td>
+                    <td>Даммаку-шутер</td>
+                    <td>Рейму Хакурей, Мариса Кирисаме</td>
+                </tr>
+                <tr>
+                    <td>Восточная чарующая мечта</td>
+                    <td>2003</td>
+                    <td>Windows</td>
+                    <td>Даммаку-шутер</td>
+                    <td>Рейму Хакурей, Мариса Кирисаме, Сакуя Идзаёй</td>
+                </tr>
+                <tr>
+                    <td>Восточный узор бесконечной ночи</td>
+                    <td>2004</td>
+                    <td>Windows</td>
+                    <td>Даммаку-шутер</td>
+                    <td>
+                        Рейму Хакурей, Мариса Кирисаме, Юкари Якумо,<br />
+                        Алиса Маргатройд, Сакуя Идзаёй, Ремилия Скарлет,<br />
+                        Ёму Конпаку, Ююко Сайгёдзи
+                    </td>
+                </tr>
+                <tr>
+                    <td>Курган цветочных отражений</td>
+                    <td>2005</td>
+                    <td>Windows</td>
+                    <td>Даммаку-шутер (дуэльный)</td>
+                    <td>
+                        Рейму Хакурей, Мариса Кирисаме, Сакуя Идзаёй,<br />
+                        Ёму Конпаку, Рейсен Инаба, Чирно,<br />
+                        сёстры Призмривер, Мистия Лорелей, Теви Инаба,<br />
+                        Ая Шамеймару, Медисин Меланхоли, Ююка Кадзами,<br />
+                        Комачи Онодзука, Эики Шики
+                    </td>
+                </tr>
+                <tr>
+                    <td>Восточный корабль звезды-лотоса</td>
+                    <td>2009</td>
+                    <td>Windows</td>
+                    <td>Даммаку-шутер</td>
+                    <td>Рейму Хакурей, Мариса Кирисаме, Санаэ Кочия</td>
+                </tr>
+                <tr>
+                    <td>Восточный замок сверкающих игл</td>
+                    <td>2013</td>
+                    <td>Windows</td>
+                    <td>Даммаку-шутер</td>
+                    <td>Рейму Хакурей, Мариса Кирисаме, Сакуя Идзаёй</td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+
 </html>
