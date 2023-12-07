@@ -14,14 +14,21 @@
             </ul>
         </p>
         <hr />
-        <p align="center">
-            <a href="EoSD.html"><img src="media/EoSD.png" hspace="10px" vspace="5px" /></a>
-            <img src="media/PCB.png" hspace="10px" vspace="5px" />
-            <img src="media/PoFW.png" hspace="10px" vspace="5px" />
-            <img src="media/DDC.png" hspace="10px" vspace="5px" />
-            <img src="media/LoLK.png" hspace="10px" vspace="5px" />
-            <img src="media/UM.png" hspace="10px" vspace="5px" />
-        </p>
+        <div align="center" class="gallery">
+
+            <div class="menu">
+                <a href="index.html" class="active">Игры Touhou</a>
+                <a href="#list">Список игр</a>
+            </div>
+            <hr />
+            <a href="game.html"><img src="media/EoSD.png" hspace="10px" vspace="5px" onclick="localStorage.setItem('game', 0)" /></a>
+            <a href="game.html"><img src="media/PCB.png" hspace="10px" vspace="5px" onclick="localStorage.setItem('game', 1)" /></a>
+            <a href="game.html"><img src="media/PoFW.png" hspace="10px" vspace="5px" onclick="localStorage.setItem('game', 2)" /></a>
+            <a href="game.html"><img src="media/DDC.png" hspace="10px" vspace="5px" onclick="localStorage.setItem('game', 3)" /></a>
+            <a href="game.html"><img src="media/LoLK.png" hspace="10px" vspace="5px" onclick="localStorage.setItem('game', 4)" /></a>
+            <a href="game.html"><img src="media/UM.png" hspace="10px" vspace="5px" onclick="localStorage.setItem('game', 5)" /></a>
+            <hr />
+        </div>
         <hr />
         <p>
             <b>Touhou Project</b> - серия компьютерных игр в жанре даммаку (скролл-шутер),
