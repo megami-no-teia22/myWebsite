@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
+    <head>
+        <meta charset="utf-8" />
+        <title>Игра Touhou</title>
+
+        <script>
+			games = [
+				{menuItem: "EoSD", 
+				pict: "media/EoSD.png", 
+				firstP: "об игре",
+				secondP: "об игре",
+				},
+				{menuItem: "PCB",
+				pict: "media/PCB.png",
+				firstP: "об игре",
+				secondP: "об игре",
+				},
+				{menuItem: "PoFW",
+				pict: "media/PoFW.png",
+				firstP: "об игре",
+				secondP: "об игре",
+				},
+				{menuItem: "DDC",
+				pict: "media/DDC.png",
+				firstP: "об игре",
+				secondP: "об игре",
+				},
+				{menuItem: "LoLK",
+				pict: "media/LoLK.png",
+				firstP: "об игре",
+				secondP: "об игре",
+				},
+				{menuItem: "UM",
+				pict: "media/UM.png",
+				firstP: "об игре",
+				secondP: "об игре",
+				},
+			]
+
+			function createPage(numDict) {
+				let game = games[numDict];
+
+				let menuActive = document.getElementsByClassName("active")[0];
+				menuActive.innerHTML = game.menuItem;
+
+				let pict = document.getElementById("image");
+				pict.setAttribute("src", game.pict);
+
+				let article = document.getElementsByClassName("article")[0];
+				let pars = article.getElementsByTagName("p");
+				pars[0].innerHTML = game.firstP;
+				pars[1].innerHTML = game.secondP;
+			}
+
+			document.addEventListener("DOMContentLoaded", function() {
+				let numDict = localStorage.getItem("game");
+				createPage(numDict);
+			});
+        </script>
+	</head>
+	<body>
+		<div class="menu">
+			<a href="index.html">Игры Touhou</a>
+			<a href="game.html" class="active">this game</a>
+			<a href="#">игра</a>
+		</div>
+		<hr />
+		<img id="image" src="drawing">
+		<hr />
+		<div class="article">
+			<p>Something about something</p>
+			<p>Something else about something</p>
+		</div>
+	</body>
+</html>
