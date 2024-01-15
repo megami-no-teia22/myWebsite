@@ -1,0 +1,13 @@
+footer {
+ text-align: center;
+}
+  body {
+    background: url("media/bg.png"), linear-gradient(#fef3f9, #fef3f9, #fef3f9, #fef3f9, #fef3f9, #fef3f9,  #fef3f9,  #FF4444);
+    background-repeat: no-repeat;
+  }
+  a { 
+    text-decoration: none; 
+}
+ul {
+    list-style-type: none;
+}
