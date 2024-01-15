@@ -5,7 +5,7 @@
     <head>
         <meta charset="utf-8" />
         <title>Данные об играх</title>
-
+        <link rel="stylesheet" href="style.css">
         <script>
 function setSortTable(idTable, idSelect) {
     // находим нужную таблицу
@@ -137,6 +137,8 @@ function clearFilter(idTable, data){
   data.protagonist.value="";
   data.yearTo.value="";
   data.yearFrom.value="";
+  filterTable(idTable, data);
+  
 }
         </script>
     </head>
@@ -297,5 +299,7 @@ function clearFilter(idTable, data){
             </tbody>
         </table>
     </body>
-
+<footer><header><canvas id="compos"></canvas>
+    <script type="text/javascript" src="composition.js"></script></footer>
+    </header></footer>
 </html>
